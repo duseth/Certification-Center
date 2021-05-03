@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CertificationCenter.Models;
+using CertificationCenter.ViewModels;
 
 namespace CertificationCenter.Controllers {
     public class HomeController : Controller {
@@ -16,10 +17,6 @@ namespace CertificationCenter.Controllers {
         }
 
         public IActionResult Index() {
-            return View();
-        }
-
-        public IActionResult Privacy() {
             return View();
         }
 
