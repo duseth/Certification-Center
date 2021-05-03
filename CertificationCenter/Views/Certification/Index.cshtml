@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model IEnumerable<Certification>
+
+@{
+    ViewData["Title"] = "Список аттестаций";
+    Layout = "_Layout";
+    User user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (roles.Contains("admin")) {
+    <a asp-controller="Certification" asp-action="Create">Добавить аттестацию</a>
+}
+
+@if (Model.ToList().Count != 0) {
+    <table class="table">
+        <tr>
+            <th>Название</th><th>Дата начала</th><th>Дата окончания</th>
+            @if (roles.Contains("admin")) {
+                <th></th>
+            }
+        </tr>
+        @foreach (var certification in Model) {
+            <tr>
+                <td>@certification.Name</td>
+                <td>@certification.DatetimeStart.ToString("D")</td>
+                <td>@certification.DatetimeEnd.ToString("D")</td>
+                @if (roles.Contains("admin")) {
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@certification.Id" method="post">
+                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@certification.Id">Изменить</a>
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}
+else {
+    <div>
+        <p>Аттестации отсутствуют</p>
+    </div>
+}

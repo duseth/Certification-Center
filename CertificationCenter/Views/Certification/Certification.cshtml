@@ -1,0 +1,21 @@
+@model Certification
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_Layout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <p>@Model.Description</p>
+</div><br/>
+
+<div>
+    <a class="btn btn-sm btn-primary">Пройти</a>
+</div>
+
+<div>
+    <label>Дата начала: @Model.DatetimeStart.ToString("D")</label>
+    <label>Дата окончания: @Model.DatetimeStart.ToString("D")</label>
+</div>
