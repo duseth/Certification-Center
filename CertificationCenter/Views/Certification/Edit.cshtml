@@ -27,11 +27,17 @@
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">Пользователи</button>
             <ul class="dropdown-menu">
                 @foreach (User user in UserManager.Users.ToList()) {
-                    if (Model.Users.Contains(user.Id)) {
-                        <li><input type="checkbox" name="user" checked value=@user.Id>@user.UserName (@user.Email)</li>
-                    }
-                    else {
-                        <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                    var roles = await UserManager.GetRolesAsync(user);
+                    if(!roles.Contains("admin"))
+                    {
+                        if (Model.Users.Contains(user.Id))
+                        {
+                            <li><input type="checkbox" name="user" checked value=@user.Id>@user.UserName (@user.Email)</li>
+                        }
+                        else
+                        {
+                            <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                        }
                     }
                 }
             </ul>

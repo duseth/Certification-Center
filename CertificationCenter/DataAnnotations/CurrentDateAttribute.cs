@@ -12,7 +12,7 @@ namespace CertificationCenter.DataAnnotations {
         public override bool IsValid(object value) {
             if (value != null) {
                 var dt = (DateTime) value;
-                if (dt > DateTime.Now) {
+                if (dt > GetDate()) {
                     return true;
                 }
             }
@@ -20,14 +20,14 @@ namespace CertificationCenter.DataAnnotations {
             return false;
         }
 
-        private void GetDate()
+        private DateTime GetDate()
         {
             var client = new TcpClient("time.nist.gov", 13);
             using (var streamReader = new StreamReader(client.GetStream()))
             {
                 var response = streamReader.ReadToEnd();
                 var utcDateTimeString = response.Substring(7, 17);
-                var localDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                return  DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             }
         }
     }

@@ -24,6 +24,7 @@ namespace CertificationCenter.Controllers {
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if (ModelState.IsValid) {
                 User user = new User {UserName = model.UserName, Email = model.Email};
+              
                 var result = await _userManager.CreateAsync(user, model.Password);
                 await _userManager.AddToRoleAsync(user, "user");
                 if (result.Succeeded) {

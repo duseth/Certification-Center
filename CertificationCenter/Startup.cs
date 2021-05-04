@@ -26,6 +26,10 @@ namespace CertificationCenter {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
