@@ -17,10 +17,12 @@ namespace CertificationCenter.Controllers {
             _roleManager = roleManager;
         }
 
+        [HttpGet]
         public IActionResult Index() {
             return View(_userManager.Users.ToList());
         }
 
+        [HttpGet]
         public IActionResult Create() {
             return View();
         }
@@ -43,6 +45,7 @@ namespace CertificationCenter.Controllers {
             return View(model);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(string id) {
             User user = await _userManager.FindByIdAsync(id);
             if (user == null) {
@@ -69,9 +72,12 @@ namespace CertificationCenter.Controllers {
                     
                     if (model.Role == "user" && roles.Contains("admin")) {
                         await _userManager.RemoveFromRoleAsync(user, "admin");
+                        await _userManager.AddToRoleAsync(user, "user");
+
                     }
 
                     if (model.Role == "admin" && !roles.Contains("admin")) {
+                        await _userManager.RemoveFromRoleAsync(user, "user");
                         await _userManager.AddToRoleAsync(user, "admin");
                     }
 

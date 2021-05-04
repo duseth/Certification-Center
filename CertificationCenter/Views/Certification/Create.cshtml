@@ -6,6 +6,14 @@
 @{
     ViewData["Title"] = "Добавление аттестации";
     Layout = "_Layout";
+    List<User> users = new List<User>();
+    var allUsers = UserManager.Users.ToList();
+    foreach (User user in allUsers) {
+        var roles = await UserManager.GetRolesAsync(user);
+        if (!roles.Contains("admin")) {
+            users.Add(user);
+        }
+    }
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -87,25 +95,21 @@
     </div>
 </form>
 
-
 <script type="text/javascript">
-var options = [];
-
-$( '.dropdown-menu a' ).on( 'click', function( event ) {
-   var $target = $( event.currentTarget ),
-       val = $target.attr( 'data-value' ),
-       $inp = $target.find( 'input' ),
+let options = [];
+$('.dropdown-menu a').on('click', function(event) {
+   let $target = $( event.currentTarget),
+       val = $target.attr('data-value'),
+       $inp = $target.find('input'),
        idx;
-
-   if ( ( idx = options.indexOf( val ) ) > -1 ) {
-      options.splice( idx, 1 );
-      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+   if ((idx = options.indexOf(val)) > -1) {
+      options.splice(idx, 1);
+      setTimeout(function() { $inp.prop('checked', false) }, 0);
    } else {
-      options.push( val );
-      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+      options.push(val);
+      setTimeout(function() { $inp.prop( 'checked', true) }, 0);
    }
-
-   $( event.target ).blur();   
+   $(event.target).blur();   
    return false;
 });
 </script>

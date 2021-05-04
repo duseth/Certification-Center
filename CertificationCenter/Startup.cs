@@ -30,6 +30,7 @@ namespace CertificationCenter {
             {
                 options.User.RequireUniqueEmail = true;
             });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

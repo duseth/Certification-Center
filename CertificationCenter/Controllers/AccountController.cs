@@ -93,7 +93,7 @@ namespace CertificationCenter.Controllers {
                             await passwordValidator.ValidateAsync(_userManager, user, model.Password);
 
                         if (result.Succeeded) {
-                            if (passwordHasher != null)
+                            if (passwordHasher != null && !string.IsNullOrEmpty(model.Password))
                                 user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
                             await _userManager.UpdateAsync(user);
                             return RedirectToAction("Index", "Home");

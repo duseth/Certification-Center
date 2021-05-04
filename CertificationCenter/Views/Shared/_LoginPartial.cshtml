@@ -5,7 +5,7 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User)) {
         <li class="nav-item">
-            <a asp-action="Edit" asp-controller="Account" asp-route-id="@UserManager.GetUserId(User)" class="nav-link text-dark">@User.Identity.Name</a>
+            <a asp-action="Edit" asp-controller="Account" asp-route-id="@UserManager.GetUserId(User)" class="nav-link text-dark">@UserManager.GetUserAsync(User).Result.UserName</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-action="Logout" asp-controller="Account" asp-route-returnUrl="@Url.Action("Index", "Home")">

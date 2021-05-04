@@ -2,14 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CertificationCenter.ViewModels {
     public class CreateUserViewModel {
-        [Required(ErrorMessage = "Требуется заполнить поле Имя!"), Display(Name = "Имя")]
+        [Required(ErrorMessage = "Имя пользователя не заполнено"), Display(Name = "Имя пользователя")]
         public string UserName { get; set; }
-        [Required(ErrorMessage = "Требуется заполнить поле Email!"), Display(Name = "Email"),
+        [Required(ErrorMessage = "Email обязательный для заполнения"), Display(Name = "Email"),
         DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Требуется заполнить поле Пароль!"), Display(Name = "Пароль"),
+        [Required(ErrorMessage = "Поле пароля не должно быть пустым"), Display(Name = "Пароль"),
          DataType(DataType.Password)]
         public string Password { get; set; }
+        [Required(ErrorMessage = "Роль должна быть указана"), Display(Name = "Роль")]
         public string Role { get; set; }
     }
 }
