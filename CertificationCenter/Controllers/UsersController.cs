@@ -32,8 +32,8 @@ namespace CertificationCenter.Controllers {
             if (ModelState.IsValid) {
                 User user = new User {Email = model.Email, UserName = model.UserName};
                 var result = await _userManager.CreateAsync(user, model.Password);
-                await _userManager.AddToRoleAsync(user, model.Role);
                 if (result.Succeeded) {
+                    await _userManager.AddToRoleAsync(user, model.Role);
                     return RedirectToAction("Index");
                 }
 
