@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CertificationCenter.ViewModels {
     public class RegisterViewModel {
-        [Required(ErrorMessage = "Требуется заполнить поле Имя!"), Display(Name = "Имя")]
+        [Required(ErrorMessage = "Требуется заполнить поле Имя!"), DataType(DataType.Text), Display(Name = "Имя")]
         public string UserName { get; set; }
         
         [Required(ErrorMessage = "Требуется заполнить поле Email!"), DataType(DataType.EmailAddress), Display(Name = "Email")]

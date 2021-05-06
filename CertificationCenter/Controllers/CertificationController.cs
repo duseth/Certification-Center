@@ -60,7 +60,7 @@ namespace CertificationCenter.Controllers {
                         DatetimeEnd = (DateTime) model.DatetimeEnd,
                         IsActive = true
                     };
-
+                    
                     await _db.Certifications.AddAsync(certification);
 
                     foreach (string userId in Request.Form["user"]) {
@@ -74,6 +74,8 @@ namespace CertificationCenter.Controllers {
 
                         await _db.UserCertifications.AddAsync(userCertifications);
                     }
+
+
 
                     await _db.SaveChangesAsync();
                 }

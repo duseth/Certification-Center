@@ -10,7 +10,7 @@
 
 <h2>@ViewData["Title"]</h2>
 <form asp-action="Create" asp-controller="Certification">
-    <div asp-validation-summary="All" class="text-danger"></div>
+
     <div class="form-group">
         <label asp-for="Name" class="control-label">Название</label>
         <input type="text" asp-for="Name" class="form-control"/>
@@ -40,9 +40,16 @@
             </ul>
         </div>
     </div>
-    <div class="container">
+   
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn btn-outline-primary"/>
+    </div>
+
+</form>
+<div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
+                <h4>Вопросы</h4>
                 <table class="table table-bordered table-hover" id="tab_logic">
                     <thead>
                     <tr >
@@ -50,13 +57,10 @@
                             #
                         </th>
                         <th class="text-center">
-                            Name
+                            Вопрос
                         </th>
                         <th class="text-center">
-                            Mail
-                        </th>
-                        <th class="text-center">
-                            Mobile
+                            Ответ на вопрос
                         </th>
                     </tr>
                     </thead>
@@ -66,46 +70,66 @@
                             1
                         </td>
                         <td>
-                            <input type="text" name='name0'  placeholder='Name' class="form-control"/>
+                            <input type="text" name='question0' placeholder='Вопрос' class="form-control"/>
                         </td>
                         <td>
-                            <input type="text" name='mail0' placeholder='Mail' class="form-control"/>
-                        </td>
-                        <td>
-                            <input type="text" name='mobile0' placeholder='Mobile' class="form-control"/>
+                            <input type="text" name='answer0' placeholder='Ответ на вопрос' class="form-control"/>
                         </td>
                     </tr>
                     <tr id='addr1'></tr>
                     </tbody>
                 </table>
             </div>
+
         </div>
-        <a  id="add_row" class="btn btn-outline-primary">Add Row</a><a id='delete_row' class="btn btn-outline-primary">Delete Row</a>
+        <div>
+            <a id="add_row" type="button" class="btn btn-info float-right">Добавить вопрос</a>
+            <a id='delete_row' type="button" class="btn btn-info float-left">Удалить вопрос</a>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="submit" value="Добавить" class="btn btn-outline-primary"/>
-    </div>
-</form>
 
+@section scripts{
+    <script type="text/javascript">
+        var options = [];
 
-<script type="text/javascript">
-var options = [];
+        $('.dropdown-menu a').on('click',
+            function(event) {
+                var $target = $(event.currentTarget),
+                    val = $target.attr('data-value'),
+                    $inp = $target.find('input'),
+                    idx;
 
-$( '.dropdown-menu a' ).on( 'click', function( event ) {
-   var $target = $( event.currentTarget ),
-       val = $target.attr( 'data-value' ),
-       $inp = $target.find( 'input' ),
-       idx;
+                if ((idx = options.indexOf(val)) > -1) {
+                    options.splice(idx, 1);
+                    setTimeout(function() { $inp.prop('checked', false) }, 0);
+                } else {
+                    options.push(val);
+                    setTimeout(function() { $inp.prop('checked', true) }, 0);
+                }
 
-   if ( ( idx = options.indexOf( val ) ) > -1 ) {
-      options.splice( idx, 1 );
-      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
-   } else {
-      options.push( val );
-      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
-   }
+                $(event.target).blur();
+                return false;
 
-   $( event.target ).blur();   
-   return false;
-});
-</script>
+            });
+
+    </script>
+    <script>
+        $(document).ready(function(){
+            var i=1;
+            $("#add_row").click(function(){
+                $('#addr' + i).html("<td>" + (i + 1) + "</td><td><input name='question" + i + "' type='text' placeholder='Вопрос' class='form-control input-md'  /> </td><td><input  name='answer" + i +"' type='text' placeholder='Ответ на вопрос'  class='form-control input-md'></td>");
+
+                $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+                i++; 
+            });
+            $("#delete_row").click(function(){
+                if(i>1){
+                    $("#addr"+(i-1)).html('');
+                    i--;
+                }
+            });
+
+        });
+           
+    </script>
+}
