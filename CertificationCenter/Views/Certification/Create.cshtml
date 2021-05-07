@@ -2,6 +2,7 @@
 @inject UserManager<User> UserManager
 @model CertificationCenter.ViewModels.CreateCertificationViewModel
 
+
 @{
     ViewData["Title"] = "Добавление аттестации";
     Layout = "_Layout";
@@ -17,7 +18,7 @@
 
 <h2>@ViewData["Title"]</h2>
 <form asp-action="Create" asp-controller="Certification">
-    <div asp-validation-summary="All" class="text-danger"></div>
+
     <div class="form-group">
         <label asp-for="Name" class="control-label">Название</label>
         <input type="text" asp-for="Name" class="form-control"/>
@@ -34,32 +35,109 @@
         <div class="container row col-lg-12 button-group">
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">Пользователи</button>
             <ul class="dropdown-menu">
-                @foreach (User user in users) {
-                    <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                @{
+                    foreach (var user in UserManager.Users.ToList())
+                    {
+                        var roles = await UserManager.GetRolesAsync(user);
+                        if (!roles.Contains("admin"))
+                        {
+                            <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                        }
+                    }
                 }
             </ul>
         </div>
     </div>
+   
     <div class="form-group">
         <input type="submit" value="Добавить" class="btn btn-outline-primary"/>
     </div>
-</form>
 
-<script type="text/javascript">
-let options = [];
-$('.dropdown-menu a').on('click', function(event) {
-   let $target = $( event.currentTarget),
-       val = $target.attr('data-value'),
-       $inp = $target.find('input'),
-       idx;
-   if ((idx = options.indexOf(val)) > -1) {
-      options.splice(idx, 1);
-      setTimeout(function() { $inp.prop('checked', false) }, 0);
-   } else {
-      options.push(val);
-      setTimeout(function() { $inp.prop( 'checked', true) }, 0);
-   }
-   $(event.target).blur();   
-   return false;
-});
-</script>
+</form>
+<div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h4>Вопросы</h4>
+                <table class="table table-bordered table-hover" id="tab_logic">
+                    <thead>
+                    <tr >
+                        <th class="text-center">
+                            #
+                        </th>
+                        <th class="text-center">
+                            Вопрос
+                        </th>
+                        <th class="text-center">
+                            Ответ на вопрос
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id='addr0'>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            <input type="text" name='question0' placeholder='Вопрос' class="form-control"/>
+                        </td>
+                        <td>
+                            <input type="text" name='answer0' placeholder='Ответ на вопрос' class="form-control"/>
+                        </td>
+                    </tr>
+                    <tr id='addr1'></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div>
+            <a id="add_row" type="button" class="btn btn-info float-right">Добавить вопрос</a>
+            <a id='delete_row' type="button" class="btn btn-info float-left">Удалить вопрос</a>
+        </div>
+    </div>
+
+@section scripts{
+    <script type="text/javascript">
+        var options = [];
+
+        $('.dropdown-menu a').on('click',
+            function(event) {
+                var $target = $(event.currentTarget),
+                    val = $target.attr('data-value'),
+                    $inp = $target.find('input'),
+                    idx;
+
+                if ((idx = options.indexOf(val)) > -1) {
+                    options.splice(idx, 1);
+                    setTimeout(function() { $inp.prop('checked', false) }, 0);
+                } else {
+                    options.push(val);
+                    setTimeout(function() { $inp.prop('checked', true) }, 0);
+                }
+
+                $(event.target).blur();
+                return false;
+
+            });
+
+    </script>
+    <script>
+        $(document).ready(function(){
+            var i=1;
+            $("#add_row").click(function(){
+                $('#addr' + i).html("<td>" + (i + 1) + "</td><td><input name='question" + i + "' type='text' placeholder='Вопрос' class='form-control input-md'  /> </td><td><input  name='answer" + i +"' type='text' placeholder='Ответ на вопрос'  class='form-control input-md'></td>");
+
+                $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+                i++; 
+            });
+            $("#delete_row").click(function(){
+                if(i>1){
+                    $("#addr"+(i-1)).html('');
+                    i--;
+                }
+            });
+
+        });
+           
+    </script>
+}

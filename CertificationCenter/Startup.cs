@@ -19,15 +19,20 @@ namespace CertificationCenter {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }   
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole>(options => {
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
+            services.Configure<IdentityOptions>(options =>
+            {
                 options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<ApplicationContext>();
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-. _ @ + àáâãäå¸æçèéêëìíîïğñòóôõö÷øùúûüışÿÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß";
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
