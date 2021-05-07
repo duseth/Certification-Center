@@ -5,6 +5,14 @@
 @{
     ViewData["Title"] = "Редактирование аттестации";
     Layout = "_Layout";
+    List<User> users = new List<User>();
+    var allUsers = UserManager.Users.ToList();
+    foreach (User user in allUsers) {
+        var roles = await UserManager.GetRolesAsync(user);
+        if (!roles.Contains("admin")) {
+            users.Add(user);
+        }
+    }
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -38,7 +46,6 @@
                         {
                             <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
                         }
-                    }
                 }
             </ul>
         </div>
