@@ -18,7 +18,6 @@
 
 <h2>@ViewData["Title"]</h2>
 <form asp-action="Create" asp-controller="Certification">
-
     <div class="form-group">
         <label asp-for="Name" class="control-label">Название</label>
         <input type="text" asp-for="Name" class="form-control"/>
@@ -36,11 +35,9 @@
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">Пользователи</button>
             <ul class="dropdown-menu">
                 @{
-                    foreach (var user in UserManager.Users.ToList())
-                    {
+                    foreach (var user in UserManager.Users.ToList()) {
                         var roles = await UserManager.GetRolesAsync(user);
-                        if (!roles.Contains("admin"))
-                        {
+                        if (!roles.Contains("admin")) {
                             <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
                         }
                     }
@@ -48,53 +45,40 @@
             </ul>
         </div>
     </div>
-   
     <div class="form-group">
-        <input type="submit" value="Добавить" class="btn btn-outline-primary"/>
-    </div>
-
-</form>
-<div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <h4>Вопросы</h4>
-                <table class="table table-bordered table-hover" id="tab_logic">
-                    <thead>
-                    <tr >
-                        <th class="text-center">
-                            #
-                        </th>
-                        <th class="text-center">
-                            Вопрос
-                        </th>
-                        <th class="text-center">
-                            Ответ на вопрос
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr id='addr0'>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            <input type="text" name='question0' placeholder='Вопрос' class="form-control"/>
-                        </td>
-                        <td>
-                            <input type="text" name='answer0' placeholder='Ответ на вопрос' class="form-control"/>
-                        </td>
-                    </tr>
-                    <tr id='addr1'></tr>
-                    </tbody>
-                </table>
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <h4>Вопросы</h4>
+                    <table class="table table-bordered table-hover" id="tab_logic">
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Вопрос</th>
+                            <th class="text-center">Ответ на вопрос</th>
+                        </tr>
+                        <tr id='addr0'>
+                            <td>1</td>
+                            <td>
+                                <input type="text" name='question0' placeholder='Вопрос' class="form-control"/>
+                            </td>
+                            <td>
+                                <input type="text" name='answer0' placeholder='Ответ на вопрос' class="form-control"/>
+                            </td>
+                        </tr>
+                        <tr id='addr1'></tr>
+                    </table>
+                </div>
             </div>
-
-        </div>
-        <div>
-            <a id="add_row" type="button" class="btn btn-info float-right">Добавить вопрос</a>
-            <a id='delete_row' type="button" class="btn btn-info float-left">Удалить вопрос</a>
+            <div>
+                <button id='add_row' type="button" class="btn btn-info">Добавить вопрос</button>
+                <button id='delete_row' type="button" class="btn btn-info">Удалить вопрос</button>
+            </div>
         </div>
     </div>
+    <div class="form-group">
+        <input type="submit" value="Добавить аттестацию" class="btn btn-outline-primary"/>
+    </div>
+</form>
 
 @section scripts{
     <script type="text/javascript">
@@ -119,7 +103,6 @@
                 return false;
 
             });
-
     </script>
     <script>
         $(document).ready(function(){
@@ -138,6 +121,5 @@
             });
 
         });
-           
     </script>
 }
