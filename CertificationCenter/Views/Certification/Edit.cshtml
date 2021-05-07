@@ -36,16 +36,14 @@
             <ul class="dropdown-menu">
                 @foreach (User user in UserManager.Users.ToList()) {
                     var roles = await UserManager.GetRolesAsync(user);
-                    if(!roles.Contains("admin"))
-                    {
-                        if (Model.Users.Contains(user.Id))
-                        {
+                    if (!roles.Contains("admin")) {
+                        if (Model.Users.Contains(user.Id)) {
                             <li><input type="checkbox" name="user" checked value=@user.Id>@user.UserName (@user.Email)</li>
                         }
-                        else
-                        {
+                        else {
                             <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
                         }
+                    }
                 }
             </ul>
         </div>
