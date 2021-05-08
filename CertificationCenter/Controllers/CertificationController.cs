@@ -9,9 +9,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CertificationCenter.Controllers {
+    /// <summary>
+    /// Контроллер для работы с аттестациями.
+    /// </summary>
     [Authorize]
     public class CertificationController : Controller {
+        /// <summary>
+        /// Свойство предоставляющее постоянное хранилище объектам типа User и работу с ними.
+        /// </summary>
         private readonly UserManager<User> _userManager;
+
+        /// <summary>
+        /// Свойство предоставляющее контекст для работы с базой данных.
+        /// </summary>
         private readonly ApplicationContext _db;
 
         public CertificationController(UserManager<User> userManager, ApplicationContext db) {
@@ -19,6 +29,10 @@ namespace CertificationCenter.Controllers {
             _db = db;
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на страницу аттестаций.
+        /// </summary>
+        /// <returns>Список всех аттестаций для данного пользователя, или всех аттестаций для админа.</returns>
         [HttpGet]
         public async Task<IActionResult> Index() {
             User user = await _userManager.GetUserAsync(User);
@@ -41,12 +55,22 @@ namespace CertificationCenter.Controllers {
             return View(certificationsByUser);
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на страницу создания аттестации.
+        /// </summary>
+        /// <returns>Страницу для создания аттестации.</returns>
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult Create() {
             return View();
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на создание аттестации.
+        /// </summary>
+        /// <param name="model">Модель представления для создания аттестации.</param>
+        /// <returns>Перенаправление на страницу аттестаций при успешном добавлении,
+        /// иначе страницу с ошибками.</returns>
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(CreateCertificationViewModel model) {
@@ -60,7 +84,7 @@ namespace CertificationCenter.Controllers {
                         DatetimeEnd = (DateTime) model.DatetimeEnd,
                         IsActive = true
                     };
-                    
+
                     await _db.Certifications.AddAsync(certification);
 
                     foreach (string userId in Request.Form["user"]) {
@@ -75,8 +99,6 @@ namespace CertificationCenter.Controllers {
                         await _db.UserCertifications.AddAsync(userCertifications);
                     }
 
-
-
                     await _db.SaveChangesAsync();
                 }
 
@@ -86,10 +108,20 @@ namespace CertificationCenter.Controllers {
             return View();
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при обращении к странице изменения аттестации.
+        /// </summary>
+        /// <param name="id">Идентификатор аттестации.</param>
+        /// <returns>Страницу для изменения аттестации,
+        /// если такой аттестации не существует - страницу ошибки.</returns>
         [HttpGet]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(string id) {
             Certification certification = await _db.Certifications.FindAsync(id);
+
+            if (certification == null) {
+                return NotFound();
+            }
 
             var users = _db.UserCertifications
                 .Where(e => e.CertificationId == certification.Id)
@@ -103,9 +135,16 @@ namespace CertificationCenter.Controllers {
                 DatetimeEnd = certification.DatetimeEnd,
                 Users = users
             };
+            
             return View(editCertificationViewModel);
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на изменение аттестации.
+        /// </summary>
+        /// <param name="model">Модель представления для изменения аттестации.</param>
+        /// <returns>Перенаправление на страницу аттестаций при успешном изменении,
+        /// иначе страницу с ошибкой.</returns>
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(EditCertificationViewModel model) {
@@ -140,9 +179,14 @@ namespace CertificationCenter.Controllers {
                 }
             }
 
-            return View();
+            return View(model);
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на удаление аттестации.
+        /// </summary>
+        /// <param name="id">Идентификатор аттестации.</param>
+        /// <returns>Страницу с аттестациями.</returns>
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(string id) {
