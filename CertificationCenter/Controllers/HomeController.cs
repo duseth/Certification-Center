@@ -9,17 +9,24 @@ using CertificationCenter.Models;
 using CertificationCenter.ViewModels;
 
 namespace CertificationCenter.Controllers {
+    /// <summary>
+    /// Контроллер для управления домашней страницей.
+    /// </summary>
     public class HomeController : Controller {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger) {
-            _logger = logger;
-        }
-
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на домашнюю страницу.
+        /// </summary>
+        /// <returns>Домашнюю страницу.</returns>
+        [HttpGet]
         public IActionResult Index() {
             return View();
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при ошибке.
+        /// </summary>
+        /// <returns>Страницу с ошибкой.</returns>
+        [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
