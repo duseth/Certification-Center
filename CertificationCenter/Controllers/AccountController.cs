@@ -6,8 +6,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CertificationCenter.Controllers {
+    /// <summary>
+    /// Контроллер управления аккаунтами.
+    /// </summary>
     public class AccountController : Controller {
+        /// <summary>
+        /// Свойство предоставляющее постоянное хранилище объектам типа User и работу с ними.
+        /// </summary>
         private readonly UserManager<User> _userManager;
+        /// <summary>
+        /// Свойство предоставляющее работу с авторизацией пользователей.
+        /// </summary>
         private readonly SignInManager<User> _signInManager;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) {
@@ -15,11 +24,21 @@ namespace CertificationCenter.Controllers {
             _signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на страницу регистрации.
+        /// </summary>
+        /// <returns>Страницу регистрации.</returns>
         [HttpGet]
         public IActionResult Register() {
             return View();
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на регистрацию пользователя.
+        /// </summary>
+        /// <param name="model">Модель представления для регистрации.</param>
+        /// <returns>Перенаправление на домашнюю страницу при успешной регистрации,
+        /// иначе страницу регистрации с ошибкой.</returns>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if (ModelState.IsValid) {
@@ -38,12 +57,22 @@ namespace CertificationCenter.Controllers {
 
             return View(model);
         }
-
+        
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на страницу авторизации.
+        /// </summary>
+        /// <returns>Страницу авторизации.</returns>
         [HttpGet]
         public IActionResult Login() {
             return View();
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на авторизацию пользователя.
+        /// </summary>
+        /// <param name="model">Модель представления для авторизации.</param>
+        /// <returns>Перенаправление на домашнюю страницу при успешной авторизации,
+        /// иначе страницу авторизации с ошибкой</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model) {
@@ -60,6 +89,12 @@ namespace CertificationCenter.Controllers {
             return View(model);
         }
 
+        /// <summary>
+        /// Обработчик GET-запроса при обращении на изменение пользователя.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <returns>Страницу для изменения данных о пользователе,
+        /// если такого не существует - страницу с ошибкой.</returns>
         [HttpGet]
         public async Task<IActionResult> Edit(string id) {
             User user = await _userManager.FindByIdAsync(id);
@@ -72,6 +107,12 @@ namespace CertificationCenter.Controllers {
             return View(model);
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на изменение пользователя.
+        /// </summary>
+        /// <param name="model">Модель представления для изменения пользователя.</param>
+        /// <returns>Перенаправление на домашнюю страницу при успешном изменении,
+        /// иначе страницу с ошибкой</returns>
         [HttpPost]
         public async Task<IActionResult> Edit(EditUserViewModel model) {
             if (ModelState.IsValid) {
@@ -108,6 +149,10 @@ namespace CertificationCenter.Controllers {
             return View(model);
         }
 
+        /// <summary>
+        /// Обработчик POST-запроса на выход из аккаунта.
+        /// </summary>
+        /// <returns>Перенаправление на страницу авторизации.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout() {
