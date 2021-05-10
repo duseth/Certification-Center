@@ -5,14 +5,6 @@
 @{
     ViewData["Title"] = "Редактирование аттестации";
     Layout = "_Layout";
-    List<User> users = new List<User>();
-    var allUsers = UserManager.Users.ToList();
-    foreach (User user in allUsers) {
-        var roles = await UserManager.GetRolesAsync(user);
-        if (!roles.Contains("admin")) {
-            users.Add(user);
-        }
-    }
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -34,14 +26,17 @@
         <div class="container row col-lg-12 button-group">
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">Пользователи</button>
             <ul class="dropdown-menu">
-                @foreach (User user in UserManager.Users.ToList()) {
-                    var roles = await UserManager.GetRolesAsync(user);
-                    if (!roles.Contains("admin")) {
-                        if (Model.Users.Contains(user.Id)) {
-                            <li><input type="checkbox" name="user" checked value=@user.Id>@user.UserName (@user.Email)</li>
-                        }
-                        else {
-                            <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                @{
+                    List<User> users = UserManager.Users.ToList();
+                    foreach (User user in users) {
+                        var roles = await UserManager.GetRolesAsync(user);
+                        if (!roles.Contains("admin")) {
+                            if (Model.Users.Contains(user.Id)) {
+                                <li><input type="checkbox" name="user" checked value=@user.Id>@user.UserName (@user.Email)</li>
+                            }
+                            else {
+                                <li><input type="checkbox" name="user" value=@user.Id>@user.UserName (@user.Email)</li>
+                            }
                         }
                     }
                 }
