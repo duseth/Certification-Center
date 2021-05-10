@@ -20,17 +20,33 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            @if (SignInManager.IsSignedIn(User)) {
+            @if (SignInManager.IsSignedIn(User))
+            {
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Certification" asp-action="Index">Аттестации</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Answer" asp-action="Index">Результаты</a>
+                            @{
+                                User user = await UserManager.GetUserAsync(User);
+                                if (user != null)
+                                {
+                                    var roles = await UserManager.GetRolesAsync(user);
+                                    if (roles.Contains("admin"))
+                                    {
+                                        <a class="nav-link text-dark" asp-controller="Answer" asp-action="IndexAdm">Результаты пользователей</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="nav-link text-dark" asp-controller="Answer" asp-action="Index">Ваши результаты</a>
+                                    }
+                                }
+                            }
+
                         </li>
                         @{
-                            User user = await UserManager.GetUserAsync(User);
+                            
                             if (user != null) {
                                 var roles = await UserManager.GetRolesAsync(user);
                                 if (roles.Contains("admin")) {

@@ -377,3 +377,4 @@ FodyWeavers.xsd
 *.tlog
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
+.vs/CertificationCenter/v16/.suo

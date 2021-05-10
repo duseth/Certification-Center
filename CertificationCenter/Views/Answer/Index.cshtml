@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CertificationCenter.Models.Answer>
 
 @{
-    ViewData["Title"] = "Пройденные тесты";
+    ViewData["Title"] = "Ответы на вопрсоы";
 }
 
 <h1>Index</h1>
@@ -14,32 +14,40 @@
 
     <br />
 
-    @*@if (Model.Count() > 0)
-    {*@
+    @if (Model.Count() > 0)
+    {
         <table class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
                     <th>
-                        Дата
+                        Вопрос
                     </th>
                     <th>
-                        Название теста
+                        Ответ
                     </th>
                     <th>
                         Оценка
                     </th>
                     <th>
-
+                        Отвечал
                     </th>
                 </tr>
             </thead>
             <tbody>
-               @* @foreach (var obj in Model)
-                {*@
+                @foreach (var obj in Model)
+                {
                     <tr height="70px">
-                        <td width="15%">тут будет дата</td>
-                        <td width="35%">тут название</td>
-                        <td width="20%">тут оценка</td>
+                        <td width="15%">@obj.Question</td>
+                        <td width="35%">@obj.AnswerString</td>
+                        <td>@obj.User</td>
+                        <td width="20%">@if (obj.IsCorrect)
+                        {
+                            <p>Вы ответили верно</p>
+                        }
+                        else
+                        {
+                            <p>Вы ответили неверно</p>
+                        }</td>
                         <td class="text-center">
                             <div class="w-75 btn">
                                 <a asp-controller="Answer" class="btn btn-primary mx-2">
@@ -49,15 +57,15 @@
                             </div>
                         </td>
                     </tr>
-                @*}*@
+                }
             </tbody>
         </table>
 
-   @* }
+    }
     else
-    {*@
+    {
         <p>Вы еще не проходили тесты</p>
-    @*}*@
+    }
 
 
 
