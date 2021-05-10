@@ -74,38 +74,36 @@ namespace CertificationCenter.Controllers {
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(CreateCertificationViewModel model) {
-            if (ModelState.IsValid) {
-                if (model.DatetimeEnd != null) {
-                    Certification certification = new Certification {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = model.Name,
-                        Description = model.Description,
-                        DatetimeStart = DateTime.Today,
-                        DatetimeEnd = (DateTime) model.DatetimeEnd,
-                        IsActive = true
+            if (ModelState.IsValid && model.DatetimeEnd != null) {
+                Certification certification = new Certification {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = model.Name,
+                    Description = model.Description,
+                    DatetimeStart = DateTime.Today,
+                    DatetimeEnd = (DateTime) model.DatetimeEnd,
+                    IsActive = true
+                };
+
+                await _db.Certifications.AddAsync(certification);
+
+                foreach (string userId in Request.Form["user"]) {
+                    User user = await _userManager.FindByIdAsync(userId);
+                    UserCertifications userCertifications = new UserCertifications {
+                        UserId = userId,
+                        CertificationId = certification.Id,
+                        User = user,
+                        Certification = certification
                     };
 
-                    await _db.Certifications.AddAsync(certification);
-
-                    foreach (string userId in Request.Form["user"]) {
-                        User user = await _userManager.FindByIdAsync(userId);
-                        UserCertifications userCertifications = new UserCertifications {
-                            UserId = userId,
-                            CertificationId = certification.Id,
-                            User = user,
-                            Certification = certification
-                        };
-
-                        await _db.UserCertifications.AddAsync(userCertifications);
-                    }
-
-                    await _db.SaveChangesAsync();
+                    await _db.UserCertifications.AddAsync(userCertifications);
                 }
+
+                await _db.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
 
-            return View();
+            return View(model);
         }
 
         /// <summary>
@@ -135,7 +133,7 @@ namespace CertificationCenter.Controllers {
                 DatetimeEnd = certification.DatetimeEnd,
                 Users = users
             };
-            
+
             return View(editCertificationViewModel);
         }
 
@@ -148,37 +146,40 @@ namespace CertificationCenter.Controllers {
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(EditCertificationViewModel model) {
-            if (model.DatetimeEnd != null) {
+            model.Users = Request.Form["user"];
+            if (ModelState.IsValid && model.DatetimeEnd != null) {
                 Certification certification = await _db.Certifications.FindAsync(model.Id);
 
-                if (certification != null) {
-                    certification.Name = model.Name;
-                    certification.Description = model.Description;
-                    certification.DatetimeEnd = (DateTime) model.DatetimeEnd;
-
-                    var usersByCertification = _db.UserCertifications
-                        .Where(e => e.CertificationId == certification.Id)
-                        .ToList();
-                    _db.UserCertifications.RemoveRange(usersByCertification);
-
-                    foreach (string userId in Request.Form["user"]) {
-                        User user = await _userManager.FindByIdAsync(userId);
-                        UserCertifications userCertifications = new UserCertifications {
-                            UserId = userId,
-                            CertificationId = certification.Id,
-                            User = user,
-                            Certification = certification
-                        };
-
-                        await _db.UserCertifications.AddAsync(userCertifications);
-                    }
-
-                    await _db.SaveChangesAsync();
-
-                    return RedirectToAction("Index");
+                if (certification == null) {
+                    return NotFound();
                 }
-            }
 
+                certification.Name = model.Name;
+                certification.Description = model.Description;
+                certification.DatetimeEnd = (DateTime) model.DatetimeEnd;
+
+                var usersByCertification = _db.UserCertifications
+                    .Where(e => e.CertificationId == certification.Id)
+                    .ToList();
+                _db.UserCertifications.RemoveRange(usersByCertification);
+
+                foreach (string userId in Request.Form["user"]) {
+                    User user = await _userManager.FindByIdAsync(userId);
+                    UserCertifications userCertifications = new UserCertifications {
+                        UserId = userId,
+                        CertificationId = certification.Id,
+                        User = user,
+                        Certification = certification
+                    };
+
+                    await _db.UserCertifications.AddAsync(userCertifications);
+                }
+
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            
             return View(model);
         }
 
