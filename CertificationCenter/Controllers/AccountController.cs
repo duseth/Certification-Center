@@ -102,7 +102,7 @@ namespace CertificationCenter.Controllers {
                 return NotFound();
             }
 
-            EditUserViewModel model = new EditUserViewModel
+            EditAccountViewModel model = new EditAccountViewModel
                 {Id = user.Id, UserName = user.UserName, Email = user.Email};
             return View(model);
         }
@@ -114,7 +114,7 @@ namespace CertificationCenter.Controllers {
         /// <returns>Перенаправление на домашнюю страницу при успешном изменении,
         /// иначе страницу с ошибкой</returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(EditUserViewModel model) {
+        public async Task<IActionResult> Edit(EditAccountViewModel model) {
             if (ModelState.IsValid) {
                 User user = await _userManager.FindByIdAsync(model.Id);
 
@@ -128,12 +128,12 @@ namespace CertificationCenter.Controllers {
                     user.Email = model.Email;
                     user.UserName = model.UserName;
 
-                    if (passwordValidator != null) {
+                    if (passwordValidator != null && !string.IsNullOrEmpty(model.Password)) {
                         IdentityResult result =
                             await passwordValidator.ValidateAsync(_userManager, user, model.Password);
 
                         if (result.Succeeded) {
-                            if (passwordHasher != null && !string.IsNullOrEmpty(model.Password))
+                            if (passwordHasher != null)
                                 user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
                             await _userManager.UpdateAsync(user);
                             return RedirectToAction("Index", "Home");
