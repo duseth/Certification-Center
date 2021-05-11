@@ -51,7 +51,7 @@
                                 var roles = await UserManager.GetRolesAsync(user);
                                 if (roles.Contains("admin")) {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Пользователи</a>
+                                        <a class="nav-link text-dark" asp-controller="Users" asp-action="UserCert">Пользователи</a>
                                     </li>
                                 }
                             }
