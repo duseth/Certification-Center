@@ -1,10 +1,16 @@
 ﻿@model CertificationCenter.ViewModels.PassCertificationViewModel
 
+
+@{
+    ViewData["Title"] = "Прохождение аттестации";
+}
+
 <h2>@ViewData["Title"]</h2>
-
 <form asp-action="Pass" asp-controller="Certification">
+    <input hidden asp-for="IdCertification" />
+    <input hidden asp-for="IdUser" />
+    <input  class="form-control" readonly="readonly" type="text" asp-for="Name"  />
 
-    <input asp-for="Name" disabled="disabled" class="form-control" />
     <div class="form-group">
         <div class="container">
             <div class="row clearfix">
@@ -17,14 +23,14 @@
                         </tr>
                         @for (int j = 0; j < Model.Questions.Count; j++)
                         {
-                            <tr id="addr@(j)">
-                                <td>
-                                    <p asp-for="Questions[j]" method="get">@Model.Questions[j]</p>
-                                </td>
-                                <td>
-                                    <input asp-for="Answer[j].Answer" class="form-control" />
-                                </td>
-                            </tr>
+                    <tr id="addr@(j)">
+                        <td>
+                            <input readonly="readonly" type="text" asp-for="@Model.Questions[j]" class="form-control" />
+                        </td>
+                        <td>
+                            <input asp-for="Answer[j]" class="form-control" />
+                        </td>
+                    </tr>
                         }
                     </table>
                 </div>

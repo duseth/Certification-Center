@@ -139,12 +139,18 @@ namespace CertificationCenter.Controllers {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             var questions = _db.Questions.Where(x => x.CertificationId == certification.Id)
                 .Select(x => x.QuestionString).ToList();
+            var answear = new List<string>();
+            foreach (var item in questions)
+            {
+                answear.Add("");
+            }
             PassCertificationViewModel passCertification=new PassCertificationViewModel()
             {
                 IdUser = user.Id,
                 IdCertification = certification.Id,
                 Name = certification.Name,
                 Questions = questions,
+                Answer = answear
             };
             return View(passCertification);
         }
@@ -165,13 +171,14 @@ namespace CertificationCenter.Controllers {
 
                         Answer answer = new Answer()
                         {
+                            Id = Guid.NewGuid().ToString(),
                             UserId = model.IdUser,
-                            AnswerString = item.Answer,
+                            AnswerString = item,
                             Certification = certification,
                             CertificationId = certification.Id,
                             Question = quest,
                             User = await _userManager.FindByIdAsync(model.IdUser),
-                            IsCorrect = item.Answer.ToLower()==quest.AnswerString.ToLower()?true:false
+                            IsCorrect = item.ToLower()==quest.AnswerString.ToLower()?true:false
                         };
                         await _db.Answers.AddAsync(answer);
                     }
