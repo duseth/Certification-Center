@@ -17,6 +17,6 @@ namespace CertificationCenter.ViewModels {
          CurrentDate(ErrorMessage = "Дата окончания должна быть больше текущего дня")]
         public DateTime? DatetimeEnd { get; set; }
 
-        public List<CreateQuestionsViewModel> Questions { get; set; }
+        public string Topic { get; set; }
     }
 }

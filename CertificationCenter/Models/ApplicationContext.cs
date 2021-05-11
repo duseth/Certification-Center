@@ -8,6 +8,7 @@ namespace CertificationCenter.Models {
     public class ApplicationContext : IdentityDbContext<User> {
         public DbSet<Certification> Certifications { get; set; }
         public DbSet<UserCertifications> UserCertifications { get; set; }
+        public DbSet<Topic> Topics { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
 
@@ -193,7 +194,7 @@ namespace CertificationCenter.Models {
                     .HasColumnType("text")
                     .IsRequired();
 
-                b.Property(e => e.CertificationId)
+                b.Property(e => e.TopicId)
                     .HasColumnType("text")
                     .IsRequired();
 
@@ -201,7 +202,7 @@ namespace CertificationCenter.Models {
                     .HasColumnType("text")
                     .IsRequired();
 
-                b.HasOne(p => p.Certification)
+                b.HasOne(p => p.Topic)
                     .WithMany()
                     .HasForeignKey("CertificationId")
                     .OnDelete(DeleteBehavior.Cascade)
