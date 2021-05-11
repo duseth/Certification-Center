@@ -9,7 +9,7 @@ namespace CertificationCenter.ViewModels
 {
     public class AnswerViewModel
     {
-        public Answer answer { get; set; }
-        public IEnumerable<SelectListItem> AnswerList { get; set; }
+        public string Answer { get; set; }
+       
     }
 }

@@ -1,0 +1,37 @@
+﻿@model CertificationCenter.ViewModels.PassCertificationViewModel
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Pass" asp-controller="Certification">
+
+    <input asp-page="" disabled="disabled" class="form-control" />
+    <div class="form-group">
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <h4>Вопросы</h4>
+                    <table class="table table-bordered table-hover" id="tab_logic">
+                        <tr>
+                            <th class="text-center">Вопрос</th>
+                            <th class="text-center">Ответ на вопрос</th>
+                        </tr>
+                        @for (int j = 0; j < Model.Questions.Count; j++)
+                        {
+                            <tr id="addr@(j)">
+                                <td>
+                                    <p asp-for="Questions[j]" method="get">@Model.Questions[j]</p>
+                                </td>
+                                <td>
+                                    <input asp-for="Answer[j].Answer" class="form-control" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-primary" />
+    </div>
+</form>
