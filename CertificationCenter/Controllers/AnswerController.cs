@@ -3,6 +3,7 @@ using CertificationCenter.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,24 @@ namespace CertificationCenter.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(EditUserViewModel model)
+        public async Task<IActionResult> UserCert(EditUserViewModel model)
         {
             User user = await _userManager.FindByIdAsync(model.Id);
-            IEnumerable<Answer> answers = _db.Answers.Where(a => a.UserId==user.Id);    //посмотреть, как вытаскивают юзер айди        
+            IEnumerable<Certification> certifications =null;
+            IEnumerable<Answer> answers = _db.Answers.Where(a => a.UserId == user.Id);
+            foreach (Answer answer in answers)
+            { 
+                certifications = _db.Certifications.Where(c => c.Id == answer.CertificationId);
+            }
+           
+            return View(certifications);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(EditUserViewModel model, string id)
+        {
+            User user = await _userManager.FindByIdAsync(model.Id);
+            IEnumerable<Answer> answers = _db.Answers.Include(a => a.UserId==user.Id).Include(a => a.CertificationId==id);        
             return View(answers);
         }
 
