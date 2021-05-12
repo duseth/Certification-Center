@@ -114,6 +114,69 @@ namespace CertificationCenter.Controllers {
 
             return View(model);
         }
+        [HttpGet]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> Pass(string id)
+        {
+            Certification certification = await _db.Certifications.FindAsync(id);
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var questions = _db.Questions.Where(x => x.TopicId == certification.TopicId)
+                .Select(x => x.QuestionString).ToList();
+            var answear = new List<string>();
+            foreach (var item in questions)
+            {
+                answear.Add("");
+            }
+            PassCertificationViewModel passCertification = new PassCertificationViewModel()
+            {
+                IdUser = user.Id,
+                IdCertification = certification.Id,
+                Name = certification.Name,
+                Questions = questions,
+                Answer = answear
+            };
+            return View(passCertification);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> Pass(PassCertificationViewModel model)
+        {
+            if (model.IdUser != null)
+            {
+                Certification certification = await _db.Certifications.FindAsync(model.IdCertification);
+                Result result=new Result()
+                {
+                    Id=Guid.NewGuid().ToString(),
+                    CertificationId = model.IdCertification,
+                    UserId=model.IdUser
+                };
+                await _db.Results.AddAsync(result);
+
+                var questions = _db.Questions.Where(x => x.TopicId == certification.TopicId).ToList();
+                foreach (var quest in questions)
+                {
+
+                    foreach (var item in model.Answer)
+                    {
+
+                        Answer answer = new Answer()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ResultId = result.Id,
+                            QuestionId = quest.Id,
+                            AnswerString = item,
+                            IsCorrect = item.ToLower() == quest.AnswerString.ToLower() ? true : false
+                        };
+                        await _db.Answers.AddAsync(answer);
+                    }
+                }
+
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
 
         /// <summary>
         /// Обработчик GET-запроса при обращении к странице изменения аттестации.

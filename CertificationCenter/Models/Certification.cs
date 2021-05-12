@@ -9,7 +9,6 @@ namespace CertificationCenter.Models {
         public DateTime DatetimeStart { get; set; }
         public DateTime DatetimeEnd { get; set; }
         public bool IsActive { get; set; }
-
         public Topic Topic { get; set; }
     }
 }

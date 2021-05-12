@@ -9,6 +9,7 @@ namespace CertificationCenter.Models {
         public DbSet<Certification> Certifications { get; set; }
         public DbSet<UserCertifications> UserCertifications { get; set; }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<Result> Results { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
 
@@ -213,51 +214,7 @@ namespace CertificationCenter.Models {
                 b.ToTable("Questions");
             });
 
-            builder.Entity<Answer>(b => {
-                b.Property(e => e.Id)
-                    .HasColumnType("text")
-                    .IsRequired();
-
-                b.Property(e => e.UserId)
-                    .HasColumnType("text")
-                    .IsRequired();
-
-                b.Property(e => e.CertificationId)
-                    .HasColumnType("text")
-                    .IsRequired();
-
-                b.Property(e => e.QuestionId)
-                    .HasColumnType("text")
-                    .IsRequired();
-
-                b.Property(e => e.AnswerString)
-                    .HasColumnType("text");
-
-                b.Property(e => e.IsCorrect)
-                    .HasColumnType("boolean");
-
-                b.HasKey("Id");
-
-                b.HasOne(p => p.User)
-                    .WithMany()
-                    .HasForeignKey("UserId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.HasOne(p => p.Certification)
-                    .WithMany()
-                    .HasForeignKey("CertificationId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.HasOne(p => p.Question)
-                    .WithMany()
-                    .HasForeignKey("QuestionId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.ToTable("Answers");
-            });
+        
         }
     }
 }

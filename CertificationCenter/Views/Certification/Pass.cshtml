@@ -1,0 +1,43 @@
+﻿@model CertificationCenter.ViewModels.PassCertificationViewModel
+
+
+@{
+    ViewData["Title"] = "Прохождение аттестации";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-action="Pass" asp-controller="Certification">
+    <input hidden asp-for="IdCertification" />
+    <input hidden asp-for="IdUser" />
+    <input  class="form-control" readonly="readonly" type="text" asp-for="Name"  />
+
+    <div class="form-group">
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <h4>Вопросы</h4>
+                    <table class="table table-bordered table-hover" id="tab_logic">
+                        <tr>
+                            <th class="text-center">Вопрос</th>
+                            <th class="text-center">Ответ на вопрос</th>
+                        </tr>
+                        @for (int j = 0; j < Model.Questions.Count; j++)
+                        {
+                            <tr id="addr@(j)">
+                                <td>
+                                    <input readonly="readonly" type="text" asp-for="@Model.Questions[j]" class="form-control" />
+                                </td>
+                                <td>
+                                    <input asp-for="Answer[j]" class="form-control" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-primary" />
+    </div>
+</form>
