@@ -21,14 +21,14 @@
                             <th class="text-center">Вопрос</th>
                             <th class="text-center">Ответ на вопрос</th>
                         </tr>
-                        @for (int j = 0; j < Model.Questions.Count; j++)
-                        {
-                            <tr id="addr@(j)">
+                        @foreach (string question in Model.Answers.Keys) 
+                            {
+                            <tr>
                                 <td>
-                                    <input readonly="readonly" type="text" asp-for="@Model.Questions[j]" class="form-control" />
+                                    <input readonly="readonly" type="text" asp-for="@question" class="form-control" />
                                 </td>
                                 <td>
-                                    <input asp-for="Answer[j]" class="form-control" />
+                                    <input asp-for="@Model.Answers[question]" class="form-control" />
                                 </td>
                             </tr>
                         }
