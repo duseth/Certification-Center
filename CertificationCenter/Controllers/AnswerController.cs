@@ -23,12 +23,23 @@ namespace CertificationCenter.Controllers {
             _db = db;
         }
 
+        /// <summary>
+        /// GET-запрос на получения списка аттестаций, пройденных пользователем
+        /// </summary>
+        /// <param name="id">id пользователя</param>
+        /// <returns>Список пройденных аттестаций</returns>
         [HttpGet]
         public IActionResult UserCert(string id) {
             var result = _db.Results.Where(x => x.UserId == id).Include(x => x.Certification).ToList();
             return View(result);
         }
 
+
+        /// <summary>
+        /// GET-запрос на получение списка ответов в конкретной аттестации
+        /// </summary>
+        /// <param name="id">id аттестации</param>
+        /// <returns>Список ответов</returns>
         [HttpGet]
         public ActionResult Index(string id) {
             var answers = _db.Answers.Where(x => x.ResultId == id).Include(x => x.Question).Include(x => x.Result)
@@ -36,6 +47,10 @@ namespace CertificationCenter.Controllers {
             return View(answers);
         }
 
+        /// <summary>
+        /// GET-запрос на просмотр пользователей администратором
+        /// </summary>
+        /// <returns>Список всех пользователей с ролью "user"</returns>
         [HttpGet]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> IndexAdmin() {
@@ -50,6 +65,12 @@ namespace CertificationCenter.Controllers {
             return View(users);
         }
 
+
+        /// <summary>
+        /// GET-Запрос на просмотр результатов аттестации администратором
+        /// </summary>
+        /// <param name="id">id аттестации</param>
+        /// <returns>Список ответов, данных при прохождении аттестации</returns>
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult EditAnswer(string id) {
@@ -63,6 +84,11 @@ namespace CertificationCenter.Controllers {
             return View(model);
         }
 
+        /// <summary>
+        /// POST-запрос на редактирование ответов администратором
+        /// </summary>
+        /// <param name="model">Модель ответа</param>
+        /// <returns>Изменяет оценку у пользователя. Возвращает к списку пользователей</returns>
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> EditAnswer(EditAnswerViewModel model) {
