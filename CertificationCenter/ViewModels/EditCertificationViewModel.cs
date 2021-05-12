@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CertificationCenter.DataAnnotations;
 
@@ -17,6 +18,9 @@ namespace CertificationCenter.ViewModels {
          Display(Name = "Дата окончания"),
          CurrentDate(ErrorMessage = "Дата окончания должна быть больше текущего дня")]
         public DateTime? DatetimeEnd { get; set; }
+
+        public List<string> TopicList { get; set; }
+        public string Topic { get; set; }
         public string[] Users { get; set; }
     }
 }

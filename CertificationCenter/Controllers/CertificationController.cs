@@ -7,6 +7,7 @@ using CertificationCenter.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CertificationCenter.Controllers {
     /// <summary>
@@ -62,7 +63,10 @@ namespace CertificationCenter.Controllers {
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult Create() {
-            return View();
+            CreateCertificationViewModel viewModel=new CreateCertificationViewModel();
+            var topic = _db.Topics.Select(x => x.Name).ToList();
+            viewModel.TopicList = topic;
+            return View(viewModel);
         }
 
         /// <summary>
@@ -74,13 +78,18 @@ namespace CertificationCenter.Controllers {
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(CreateCertificationViewModel model) {
-            if (ModelState.IsValid && model.DatetimeEnd != null) {
+            if (ModelState.IsValid && model.DatetimeEnd != null)
+            {
+
+                var topic =  _db.Topics.Where(x => x.Name == model.Topic).FirstOrDefault();
                 Certification certification = new Certification {
                     Id = Guid.NewGuid().ToString(),
                     Name = model.Name,
                     Description = model.Description,
                     DatetimeStart = DateTime.Today,
                     DatetimeEnd = (DateTime) model.DatetimeEnd,
+                    TopicId = topic.Id,
+                    Topic = topic,
                     IsActive = true
                 };
 
@@ -116,11 +125,12 @@ namespace CertificationCenter.Controllers {
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(string id) {
             Certification certification = await _db.Certifications.FindAsync(id);
-
+            _db.Certifications.Where(x=>x.Id==certification.Id).Include(x=>x.Topic).Load();
             if (certification == null) {
                 return NotFound();
             }
 
+            var topic = _db.Topics.Select(x => x.Name).Where(x => x != certification.Topic.Name).ToList();
             var users = _db.UserCertifications
                 .Where(e => e.CertificationId == certification.Id)
                 .Select(e => e.UserId)
@@ -131,7 +141,9 @@ namespace CertificationCenter.Controllers {
                 Name = certification.Name,
                 Description = certification.Description,
                 DatetimeEnd = certification.DatetimeEnd,
-                Users = users
+                Users = users,
+                TopicList = topic,
+                Topic = certification.Topic.Name
             };
 
             return View(editCertificationViewModel);
@@ -157,6 +169,7 @@ namespace CertificationCenter.Controllers {
                 certification.Name = model.Name;
                 certification.Description = model.Description;
                 certification.DatetimeEnd = (DateTime) model.DatetimeEnd;
+                certification.Topic = _db.Topics.Where(x => x.Name == model.Topic).FirstOrDefault();
 
                 var usersByCertification = _db.UserCertifications
                     .Where(e => e.CertificationId == certification.Id)
