@@ -12,5 +12,6 @@ namespace CertificationCenter.ViewModels
         public string Name { get; set; }
         public List<string> Questions { get; set; }
         public List<string> Answer { get; set; }
+        public Dictionary<string, string> Answers { get; set; }
     }
 }

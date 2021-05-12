@@ -63,7 +63,7 @@ namespace CertificationCenter.Controllers {
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult Create() {
-            CreateCertificationViewModel viewModel=new CreateCertificationViewModel();
+            CreateCertificationViewModel viewModel = new CreateCertificationViewModel();
             var topic = _db.Topics.Select(x => x.Name).ToList();
             viewModel.TopicList = topic;
             return View(viewModel);
@@ -78,10 +78,8 @@ namespace CertificationCenter.Controllers {
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(CreateCertificationViewModel model) {
-            if (ModelState.IsValid && model.DatetimeEnd != null)
-            {
-
-                var topic =  _db.Topics.Where(x => x.Name == model.Topic).FirstOrDefault();
+            if (ModelState.IsValid && model.DatetimeEnd != null) {
+                var topic = _db.Topics.FirstOrDefault(x => x.Name == model.Topic);
                 Certification certification = new Certification {
                     Id = Guid.NewGuid().ToString(),
                     Name = model.Name,
@@ -114,67 +112,54 @@ namespace CertificationCenter.Controllers {
 
             return View(model);
         }
+
         [HttpGet]
-        [Authorize(Roles = "user")]
-        public async Task<IActionResult> Pass(string id)
-        {
+        public async Task<IActionResult> Pass(string id) {
             Certification certification = await _db.Certifications.FindAsync(id);
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             var questions = _db.Questions.Where(x => x.TopicId == certification.TopicId)
                 .Select(x => x.QuestionString).ToList();
-            var answear = new List<string>();
-            foreach (var item in questions)
-            {
-                answear.Add("");
+            var answers = new Dictionary<string, string>();
+            foreach (var item in questions) {
+                answers.Add(item, "");
             }
-            PassCertificationViewModel passCertification = new PassCertificationViewModel()
-            {
+
+            PassCertificationViewModel passCertification = new PassCertificationViewModel() {
                 IdUser = user.Id,
                 IdCertification = certification.Id,
                 Name = certification.Name,
-                Questions = questions,
-                Answer = answear
+                Answers = answers
             };
             return View(passCertification);
         }
 
         [HttpPost]
-        [Authorize(Roles = "user")]
-        public async Task<IActionResult> Pass(PassCertificationViewModel model)
-        {
-            if (model.IdUser != null)
-            {
+        public async Task<IActionResult> Pass(PassCertificationViewModel model) {
+            if (model.IdUser != null) {
                 Certification certification = await _db.Certifications.FindAsync(model.IdCertification);
-                Result result=new Result()
-                {
-                    Id=Guid.NewGuid().ToString(),
+                Result result = new Result() {
+                    Id = Guid.NewGuid().ToString(),
                     CertificationId = model.IdCertification,
-                    UserId=model.IdUser
+                    UserId = model.IdUser
                 };
                 await _db.Results.AddAsync(result);
 
                 var questions = _db.Questions.Where(x => x.TopicId == certification.TopicId).ToList();
-                foreach (var quest in questions)
-                {
-
-                    foreach (var item in model.Answer)
-                    {
-
-                        Answer answer = new Answer()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            ResultId = result.Id,
-                            QuestionId = quest.Id,
-                            AnswerString = item,
-                            IsCorrect = item.ToLower() == quest.AnswerString.ToLower() ? true : false
-                        };
-                        await _db.Answers.AddAsync(answer);
-                    }
+                foreach (var quest in questions) {
+                    Answer answer = new Answer {
+                        Id = Guid.NewGuid().ToString(),
+                        ResultId = result.Id,
+                        QuestionId = quest.Id,
+                        AnswerString = model.Answers[quest.QuestionString],
+                        IsCorrect = model.Answers[quest.QuestionString].ToLower() == quest.AnswerString.ToLower()
+                    };
+                    await _db.Answers.AddAsync(answer);
                 }
 
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
             return View();
         }
 
@@ -188,7 +173,7 @@ namespace CertificationCenter.Controllers {
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(string id) {
             Certification certification = await _db.Certifications.FindAsync(id);
-            _db.Certifications.Where(x=>x.Id==certification.Id).Include(x=>x.Topic).Load();
+            _db.Certifications.Where(x => x.Id == certification.Id).Include(x => x.Topic).Load();
             if (certification == null) {
                 return NotFound();
             }
@@ -255,7 +240,7 @@ namespace CertificationCenter.Controllers {
 
                 return RedirectToAction("Index");
             }
-            
+
             return View(model);
         }
 
