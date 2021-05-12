@@ -38,6 +38,13 @@
                             </button>
                         </form>
                     </td>
+                }else
+                {
+                    <td>
+                        <form asp-action="Pass" asp-route-id="@certification.Id" method="post">
+                            <a class="btn btn-sm btn-primary" asp-action="Pass" asp-route-id="@certification.Id">Пройти</a>
+                        </form>
+                    </td>
                 }
             </tr>
         }

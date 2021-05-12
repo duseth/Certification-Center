@@ -44,6 +44,16 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="exampleFormControlSelect1">Выбор темы</label>
+        <select asp-for="Topic" class="form-control" id="exampleFormControlSelect1">
+            <option>@Model.Topic</option>
+            @foreach (var item in Model.TopicList)
+            {
+                <option>@item</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
         <input type="submit" value="Сохранить" class="btn btn-outline-primary"/>
     </div>
 </form>

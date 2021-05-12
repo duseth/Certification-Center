@@ -3,15 +3,17 @@ using System;
 using CertificationCenter.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CertificationCenter.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210510170502_AddTopic")]
+    partial class AddTopic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,20 +29,28 @@ namespace CertificationCenter.Migrations
                     b.Property<string>("AnswerString")
                         .HasColumnType("text");
 
+                    b.Property<string>("CertificationId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("boolean");
 
                     b.Property<string>("QuestionId")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ResultId")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CertificationId");
+
                     b.HasIndex("QuestionId");
 
-                    b.HasIndex("ResultId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Answers");
                 });
@@ -101,26 +111,6 @@ namespace CertificationCenter.Migrations
                     b.HasIndex("CertificationId");
 
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("CertificationCenter.Models.Result", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CertificationId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CertificationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("CertificationCenter.Models.Topic", b =>
@@ -227,15 +217,15 @@ namespace CertificationCenter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e16914f3-fcad-4252-9dc9-b5baea74e003",
-                            ConcurrencyStamp = "40dfdfca-bd70-416f-9f0b-9feca4a77802",
+                            Id = "092e79ce-9495-4442-b566-f3fa8a9b8b5b",
+                            ConcurrencyStamp = "0dfbbc99-e377-4793-84a0-3c192265a556",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "779e2993-5ade-4516-9cb0-fa1a4a0e0b44",
-                            ConcurrencyStamp = "5e25f375-661e-41c5-a693-c5f0d0463ac7",
+                            Id = "922a4d15-bc15-4b62-8c16-386ce6dfd01d",
+                            ConcurrencyStamp = "9e19294b-4461-44ca-8649-73a63837dd65",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -341,17 +331,29 @@ namespace CertificationCenter.Migrations
 
             modelBuilder.Entity("CertificationCenter.Models.Answer", b =>
                 {
+                    b.HasOne("CertificationCenter.Models.Certification", "Certification")
+                        .WithMany()
+                        .HasForeignKey("CertificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CertificationCenter.Models.Question", "Question")
                         .WithMany()
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CertificationCenter.Models.Result", "Result")
+                    b.HasOne("CertificationCenter.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("ResultId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Certification");
 
                     b.Navigation("Question");
 
-                    b.Navigation("Result");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CertificationCenter.Models.Certification", b =>
@@ -372,21 +374,6 @@ namespace CertificationCenter.Migrations
                         .IsRequired();
 
                     b.Navigation("Topic");
-                });
-
-            modelBuilder.Entity("CertificationCenter.Models.Result", b =>
-                {
-                    b.HasOne("CertificationCenter.Models.Certification", "Certification")
-                        .WithMany()
-                        .HasForeignKey("CertificationId");
-
-                    b.HasOne("CertificationCenter.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Certification");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CertificationCenter.Models.UserCertifications", b =>
