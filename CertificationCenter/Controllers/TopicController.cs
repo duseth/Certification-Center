@@ -22,7 +22,7 @@ namespace CertificationCenter.Controllers
         // GET: TopicController
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             List<Topic> topics = _db.Topics.ToList();
             return View(topics);

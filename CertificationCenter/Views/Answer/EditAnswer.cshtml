@@ -1,0 +1,76 @@
+﻿@model CertificationCenter.ViewModels.EditAnswerViewModel
+
+@{
+    ViewData["Title"] = " Ответы по тесту "+@Model.Answers.Select(x=>x.Result.Certification.Name).FirstOrDefault() +" Пользователя "+ @Model.Answers.Select(x => x.Result.User.UserName).FirstOrDefault();
+}
+
+
+
+<h2 class="text-primary">@ViewData["Title"]</h2>
+
+
+    @if (Model.Answers.Count() > 0)
+    {
+        <form asp-action="EditAnswer" asp-controller="Answer">
+            <div class="form-group">
+                <table class="table table-bordered table-striped" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>
+                            Вопрос
+                        </th>
+                        <th>
+                            Ответ
+                        </th>
+                        <th>
+                            Ваш ответ
+                        </th>
+                        <th>
+                            Оценка
+                        </th>
+                        <th>
+                            Измененная оценка
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var obj in Model.Answers)
+                    {
+
+                        for (int i = 0; i < Model.Answers.Count; i++)
+                        {
+
+                            <tr height="70px">
+                                <td width="15%"> <input readonly="readonly" type="text" asp-for="@obj.Question.QuestionString" class="form-control"/></td>
+                                <td width="15%"><input readonly="readonly" type="text" asp-for="@obj.Question.AnswerString" class="form-control"/></td>
+                                <td width="35%"><input readonly="readonly" type="text" asp-for="@obj.AnswerString" class="form-control"/></td>
+                                <td width="20%">
+                                    @if (obj.IsCorrect == true)
+                                    {
+                                        <p>Верно</p>
+                                    }
+                                    else
+                                    {
+                                        <p>Неверно</p>
+                                    }
+                                </td>
+                                <td width="15%">
+                                    <select asp-for="@Model.ChangeStringList[i]" class="form-control" id="exampleFormControlSelect1">
+                                        <option>Верно</option>
+                                        <option>Неверно</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    }
+
+
+
