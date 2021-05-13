@@ -110,6 +110,8 @@ namespace CertificationCenter.Controllers {
                 return RedirectToAction("Index");
             }
 
+            model.TopicList = new List<string>();
+
             return View(model);
         }
 
