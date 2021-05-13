@@ -53,11 +53,6 @@ namespace CertificationCenter.Models {
 
                 b.HasKey("Id");
 
-                b.HasData(
-                    new IdentityRole {Name = "user", NormalizedName = "USER"},
-                    new IdentityRole {Name = "admin", NormalizedName = "ADMIN"}
-                );
-
                 b.ToTable("Roles");
             });
 

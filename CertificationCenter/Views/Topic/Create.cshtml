@@ -5,9 +5,10 @@
 
 <h2>@ViewData["Title"]</h2>
 <form asp-action="Create" asp-controller="Topic">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Name" class="control-label">Название</label>
-        <input type="text" asp-for="Name" class="form-control" />
+        <input type="text" asp-for="Name" class="form-control"/>
     </div>
     <div class="form-group">
         <div class="container">
@@ -23,10 +24,10 @@
                         <tr id='addr0'>
                             <td>1</td>
                             <td>
-                                <input asp-for="Questions[0].QuestionString" class="form-control" />
+                                <input asp-for="Questions[0].QuestionString" class="form-control"/>
                             </td>
                             <td>
-                                <input asp-for="Questions[0].AnswerString" class="form-control" />
+                                <input asp-for="Questions[0].AnswerString" class="form-control"/>
                             </td>
                         </tr>
                         <tr id='addr1'></tr>
@@ -40,7 +41,7 @@
         </div>
     </div>
     <div class="form-group">
-        <input type="submit" value="Добавить тему" class="btn btn-outline-primary" />
+        <input type="submit" value="Добавить тему" class="btn btn-outline-primary"/>
     </div>
 </form>
 
